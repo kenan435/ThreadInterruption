@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class App {
     public static void main( final String[] args ) throws InterruptedException {
 
+        // Using the Future value //
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final Future< ? > future = executor.submit( ( ) -> {
             printNumbers(); // first call
@@ -21,25 +22,22 @@ public class App {
         executor.shutdownNow(); // will interrupt the task
         executor.awaitTermination( 3, TimeUnit.SECONDS );
 
-        /*
-         * final ExecutorService executor = Executors.newSingleThreadExecutor();
-         * executor.submit( taskThatFinishesEarlyOnInterruption() ); //
-         * requirement // 3 Thread.sleep( 3_000 ); // requirement 4
-         * executor.shutdownNow(); // requirement 5 executor.awaitTermination(
-         * 1, TimeUnit.SECONDS ); // requirement 6
-         */
+        // Using the executor framework //
+        final ExecutorService executor1 = Executors.newSingleThreadExecutor();
+        executor1.submit( taskThatFinishesEarlyOnInterruption() ); // requirement
+                                                                   // 3
+        Thread.sleep( 3_000 ); // requirement 4
+        executor1.shutdownNow(); // requirement 5
+        executor1.awaitTermination( 1, TimeUnit.SECONDS ); // requirement 6
 
-        /*
-         * final Thread taskThread = new Thread(
-         * taskThatFinishesEarlyOnInterruption() ); taskThread.start(); //
-         * requirement 3
-         * 
-         * Thread.sleep( 3_000 ); // requirement 4
-         * 
-         * taskThread.interrupt(); // requirement 5
-         * 
-         * taskThread.join( 1_000 ); // requirement 6
-         */
+
+        // Using Thread //
+        final Thread taskThread = new Thread( taskThatFinishesEarlyOnInterruption() );
+        taskThread.start(); // requirement 3
+        Thread.sleep( 3_000 ); // requirement 4
+        taskThread.interrupt(); // requirement 5
+        taskThread.join( 1_000 ); // requirement 6
+
     }
 
     private static void printNumbers() {
