@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Hello world!
  *
+ * https://dzone.com/articles/understanding-thread-interruption-in-java
+ * 
  */
 public class App {
     public static void main( final String[] args ) throws InterruptedException {
@@ -22,7 +24,7 @@ public class App {
         executor.shutdownNow(); // will interrupt the task
         executor.awaitTermination( 3, TimeUnit.SECONDS );
 
-        // Using the executor framework //
+        // An Implementation of the Use Case Using the Executor
         final ExecutorService executor1 = Executors.newSingleThreadExecutor();
         executor1.submit( taskThatFinishesEarlyOnInterruption() ); // requirement
                                                                    // 3
@@ -31,7 +33,7 @@ public class App {
         executor1.awaitTermination( 1, TimeUnit.SECONDS ); // requirement 6
 
 
-        // Using Thread //
+        // An Implementation of the Use Case Using Thread
         final Thread taskThread = new Thread( taskThatFinishesEarlyOnInterruption() );
         taskThread.start(); // requirement 3
         Thread.sleep( 3_000 ); // requirement 4
